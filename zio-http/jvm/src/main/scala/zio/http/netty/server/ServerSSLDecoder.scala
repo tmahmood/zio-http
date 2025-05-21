@@ -37,9 +37,8 @@ import io.netty.handler.ssl.ApplicationProtocolConfig.{
   SelectedListenerFailureBehavior,
   SelectorFailureBehavior,
 }
-import io.netty.handler.ssl._
-import io.netty.handler.ssl.util.SelfSignedCertificate
-import io.netty.handler.ssl.{ClientAuth => NettyClientAuth}
+import io.netty.handler.ssl.{ClientAuth => NettyClientAuth, _}
+import io.netty.pkitesting.CertificateBuilder
 private[netty] object SSLUtil {
 
   def getClientAuth(clientAuth: ClientAuth): NettyClientAuth = clientAuth match {
@@ -121,9 +120,10 @@ private[netty] object SSLUtil {
 
   def sslConfigToSslContext(sslConfig: SSLConfig): SslContext = sslConfig.data match {
     case SSLConfig.Data.Generate =>
-      val selfSigned = new SelfSignedCertificate()
+      val selfSigned = new CertificateBuilder().buildSelfSigned()
+
       SslContextBuilder
-        .forServer(selfSigned.key, selfSigned.cert)
+        .forServer(selfSigned.getKeyPair.getPrivate, selfSigned.getCertificate)
         .buildWithDefaultOptions(sslConfig)
 
     case SSLConfig.Data.FromFile(certPath, keyPath, trustCertCollectionPath) =>
@@ -141,7 +141,7 @@ private[netty] object SSLUtil {
       }.get
 
     case SSLConfig.Data.FromResource(certPath, keyPath, trustCertCollectionPath) =>
-      val classLoader = getClass().getClassLoader
+      val classLoader = getClass.getClassLoader
 
       Using.Manager { use =>
         val certInputStream      = use(classLoader.getResourceAsStream(certPath))

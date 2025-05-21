@@ -2,7 +2,7 @@ import sbt.*
 
 object Dependencies {
   val JwtCoreVersion               = "10.0.4"
-  val NettyVersion                 = "4.1.121.Final"
+  val NettyVersion                 = "4.2.1.Final"
   val NettyIncubatorVersion        = "0.0.26.Final"
   val ScalaCompatCollectionVersion = "2.13.0"
   val ZioVersion                   = "2.1.17"
@@ -27,6 +27,7 @@ object Dependencies {
       "io.netty"                   % "netty-transport-native-epoll"  % NettyVersion classifier "linux-x86_64",
       "io.netty"                   % "netty-transport-native-epoll"  % NettyVersion classifier "linux-aarch_64",
       "io.netty"                   % "netty-transport-native-kqueue" % NettyVersion,
+      "io.netty"                   % "netty-pkitesting" % NettyVersion,
       "io.netty"                   % "netty-transport-native-kqueue" % NettyVersion classifier "osx-x86_64",
       "io.netty"                   % "netty-transport-native-kqueue" % NettyVersion classifier "osx-aarch_64",
       "com.aayushatharva.brotli4j" % "brotli4j"                      % "1.18.0" % "provided",

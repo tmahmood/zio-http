@@ -19,7 +19,6 @@ package zio.http.netty.server
 import java.util.concurrent.TimeUnit
 
 import zio._
-import zio.stacktracer.TracingImplicits.disableAutoTrace
 
 import zio.http.Server
 import zio.http.Server.RequestStreaming
@@ -72,7 +71,10 @@ private[zio] final case class ServerChannelInitializer(
 
     // HttpContentDecompressor
     if (cfg.requestDecompression.enabled)
-      pipeline.addLast(Names.HttpRequestDecompression, new HttpContentDecompressor(cfg.requestDecompression.strict))
+      pipeline.addLast(
+        Names.HttpRequestDecompression,
+        new HttpContentDecompressor(cfg.requestDecompression.strict, 8192),
+      )
 
     cfg.responseCompression.foreach(ops => {
       pipeline.addLast(
